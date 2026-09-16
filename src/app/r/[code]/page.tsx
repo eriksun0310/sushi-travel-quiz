@@ -38,6 +38,16 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 const polesFor = (code: TypeCode) =>
   AXES.map((axis, i) => POLES[`${axis.key}${code[i]}` as PoleKey]);
 
+/**
+ * 挑口頭禪：用「其餘三軸」的組合當索引，而不是軸的順序。
+ * 這樣同一個極端的不同型別會拿到不同句子，
+ * 兩型平均重疊從 1.87 句降到 0.27 句，32 句也才全部用得到。
+ */
+const sayingFor = (code: TypeCode, axisIndex: number) => {
+  const rest = code.slice(0, axisIndex) + code.slice(axisIndex + 1);
+  return parseInt(rest, 2) % 4;
+};
+
 export default async function ResultPage({
   params,
   searchParams,
@@ -83,7 +93,7 @@ export default async function ResultPage({
               key={i}
               className="rounded-full border border-dashed border-line px-[13px] py-[5px] text-[12.5px] text-ink-2"
             >
-              {pole.sayings[i % 2]}
+              {pole.sayings[sayingFor(code, i)]}
             </span>
           ))}
         </div>
