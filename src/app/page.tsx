@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ALL_CODES, isTypeCode } from '@/content/axes';
+import { ALL_CODES, AXES, isTypeCode } from '@/content/axes';
 import { QUESTIONS_PER_AXIS } from '@/content/questions';
-import { AXES } from '@/content/axes';
 import { TYPES } from '@/content/types';
 
 const BELT = [
@@ -28,7 +27,7 @@ export default async function IntroPage({
 
   return (
     <main className="pb-11 pt-[30px]">
-      <div className="relative mb-6 h-[152px] overflow-hidden rounded-md border-y border-line bg-line-2">
+      <div className="relative mb-6 h-[152px] overflow-hidden rounded-md border-y border-line bg-belt">
         <div className="animate-[roll_24s_linear_infinite] absolute bottom-[20px] left-0 flex gap-[20px]">
           {[...BELT, ...BELT].map((slug, i) => (
             <Image
@@ -37,7 +36,7 @@ export default async function IntroPage({
               alt=""
               width={96}
               height={96}
-              className="h-[96px] w-[96px] object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.16)]"
+              className="h-[96px] w-[96px] object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.22)]"
               priority={i < 4}
             />
           ))}
@@ -88,6 +87,26 @@ export default async function IntroPage({
         className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]"
       >
         開始測驗
+      </Link>
+
+      {/* 還沒測就先看到有 16 種可以拿 —— 收集的念頭提早發生 */}
+      <Link href="/types" className="mt-9 block">
+        <p className="mb-3 text-center text-[12.5px] text-muted">
+          {ALL_CODES.length} 種壽司旅人，你是哪一盤？
+        </p>
+        <div className="grid grid-cols-4 gap-2">
+          {ALL_CODES.map((code) => (
+            <div key={code} className="grid aspect-square place-items-center rounded-md bg-fill">
+              <Image
+                src={`/sushi/${TYPES[code].slug}.webp`}
+                alt={TYPES[code].name}
+                width={72}
+                height={72}
+                className="h-[78%] w-[78%] object-contain"
+              />
+            </div>
+          ))}
+        </div>
       </Link>
     </main>
   );

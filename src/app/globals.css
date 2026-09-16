@@ -10,6 +10,8 @@
   --line: #d6d6d2;
   --line-2: #ececea;
   --fill: #f1f1ed;
+  /* 迴轉帶底色。深色模式要比頁面「更深」，壽司才浮得出來 */
+  --belt: #ececea;
   --accent: #c44830;
   --green: #4a9a5a;
   --warn: #cf9e3a;
@@ -28,6 +30,7 @@
     --line: #35352f;
     --line-2: #272724;
     --fill: #232320;
+    --belt: #0e0e0c;
     --accent: #e0705a;
     --green: #63b073;
     --warn: #ddb05a;
@@ -46,6 +49,7 @@
   --color-line: var(--line);
   --color-line-2: var(--line-2);
   --color-fill: var(--fill);
+  --color-belt: var(--belt);
   --color-accent: var(--accent);
   --color-good: var(--green);
   --color-warn: var(--warn);
