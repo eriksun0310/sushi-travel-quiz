@@ -43,3 +43,6 @@ next-env.d.ts
 # Cowork 檔案同步留下的暫存檔
 _tmp_*
 .tmp-check/
+
+# pnpm store 不要留在專案/桌面
+.pnpm-store/
