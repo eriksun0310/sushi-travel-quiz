@@ -19,7 +19,7 @@ export const TYPES: Record<TypeCode, SushiType> = {
     code: '0000',
     slug: 'SU-N1-otoro',
     level: 'N1',
-    name: "大トロ",
+    name: "大腹（富）",
     tag: "時價",
     line: "「花錢買體驗，回國再說」",
     roast: "你排隊兩小時只為了一碗拉麵，你覺得這叫誠意，你朋友覺得這叫浪費。你的行李箱去程十二公斤，回程二十七公斤。你沒有行程表，你只有一個模糊的「想感受一下」。你不是失控，你是投入——帳單也是這樣想的。",

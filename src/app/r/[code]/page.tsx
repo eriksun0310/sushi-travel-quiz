@@ -11,6 +11,8 @@ import { PartnerCard } from '@/components/PartnerCard';
 import { SushiWall } from '@/components/SushiWall';
 import { TypeCard } from '@/components/TypeCard';
 import { InviteButton } from '@/components/InviteButton';
+import { StoreLink } from '@/components/StoreLink';
+import { ShareCardButton } from '@/components/ShareCardButton';
 import { cautionCode, compatibleCode, theoreticalShare } from '@/lib/score';
 
 type Params = { code: string };
@@ -131,11 +133,14 @@ export default async function ResultPage({
         <SushiWall mine={type.slug} />
 
         <div className="mb-[22px] rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-5">
-          <h2 className="mb-2 text-[17px] font-black">找你的旅伴一起測</h2>
+          <h2 className="mb-2 text-[17px] font-black">分享你這一盤</h2>
           <p className="mb-4 text-[13.5px] leading-[1.8] text-ink-2">
-            把連結丟給下次要一起去日本的人。他測完之後，會看到你們兩個的組合。
+            存成圖片發限動，或把連結丟給下次要一起去日本的人 —— 他測完會看到你們兩個的組合。
           </p>
-          <InviteButton code={code} />
+          <ShareCardButton code={code} />
+          <div className="mt-2.5">
+            <InviteButton code={code} />
+          </div>
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-2.5">
@@ -167,12 +172,9 @@ export default async function ResultPage({
             <div className="text-sm font-bold leading-[1.35]">壽司日檢</div>
             <div className="text-[11.5px] text-muted">背單字，收集壽司</div>
           </div>
-          <a
-            href={process.env.NEXT_PUBLIC_APP_STORE_URL ?? '#'}
-            className="shrink-0 rounded-full bg-accent px-3.5 py-2 text-xs font-bold text-white"
-          >
+          <StoreLink className="shrink-0 rounded-full bg-accent px-3.5 py-2 text-xs font-bold text-white">
             下載
-          </a>
+          </StoreLink>
         </div>
       </main>
 
@@ -181,12 +183,9 @@ export default async function ResultPage({
         style={{ paddingTop: 10, paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))' }}
       >
         <div className="mx-auto max-w-[430px]">
-          <a
-            href={process.env.NEXT_PUBLIC_APP_STORE_URL ?? '#'}
-            className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)]"
-          >
+          <StoreLink className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)]">
             下載壽司日檢 App
-          </a>
+          </StoreLink>
         </div>
       </div>
       <div aria-hidden className="h-[86px]" />

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: '壽司旅人｜測測你是哪一種日本旅遊壽司',
     template: '%s｜壽司旅人',
   },
-  description: '16 個在日本一定會遇到的瞬間，看看你在迴轉帶上是哪一盤。來自壽司日檢。',
+  description: '16 個在日本一定會遇到的瞬間，看看你是在迴轉帶的哪一種壽司。來自壽司日檢。',
   openGraph: { type: 'website', siteName: '壽司旅人', locale: 'zh_TW' },
   twitter: { card: 'summary_large_image' },
 };

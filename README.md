@@ -7,7 +7,7 @@
 
 ```bash
 pnpm install
-cp .env.example .env.local   # 填 NEXT_PUBLIC_APP_STORE_URL
+cp .env.example .env.local
 pnpm dev
 ```
 
@@ -18,8 +18,10 @@ pnpm dev
 | `/` | 首頁。帶 `?from=<code>` 時顯示邀請人的型別 |
 | `/quiz` | 從 27 題題庫每軸抽 4 題，純 client state |
 | `/r/[code]` | 結果頁。16 個代碼各自靜態產生，帶 `?from=` 時顯示兩人組合 |
-| `/r/[code]/opengraph-image` | 每一型的 OG 圖（next/og，1200×630） |
+| `/r/[code]/opengraph-image` | 每一型的 OG 圖，連結預覽用（next/og，1200×630） |
+| `/api/card/[code]` | 每一型的社群分享卡，直式海報（next/og，1080×1350） |
 | `/types` | 16 型一覽 |
+| `/dev` | 開發用跳板，一頁點到任何一型的結果頁 / 分享卡 / OG 圖（noindex，站上沒有連結指過來） |
 
 ## 代碼怎麼讀
 
@@ -32,7 +34,10 @@ pnpm dev
 | 2 | 社交 | 敢開口 | 比手畫腳 |
 | 3 | 動機 | 打卡收集 | 體驗沉浸 |
 
-`'0000'` = 隨便走 × 失手 × 比手畫腳 × 沉浸 = 大トロ。
+`'0000'` = 隨便走 × 失手 × 比手畫腳 × 沉浸 = 大腹（富）。
+
+型名是人格名，不一定等於 App 裡那盤壽司的名字：
+`catalog.ts` 用的是 App 的原名（大トロ），`types.ts` 用的是這個測驗的型名（大腹（富））。
 
 ## 壽司怎麼配
 
@@ -67,6 +72,10 @@ N3 那一排測驗永遠抽不到，只有 App 的圖鑑裡有。
 - `pairing.ts` — 旅伴配對的說明句（目前是公版，待手寫）
 - `catalog.ts` — App 的 26 種壽司，收集牆用
 - `levels.ts` — 沿用 App 的 `levelColors`
+- `store.ts` — 壽司日檢的 App Store / Google Play 連結
+
+分享卡用的壽司圖在 `public/sushi-card/`（PNG，已裁掉透明留白）——
+satori 不吃 webp，所以跟站上用的 `public/sushi/` 分開放。
 
 ## 邀請機制
 
@@ -76,7 +85,6 @@ N3 那一排測驗永遠抽不到，只有 App 的圖鑑裡有。
 ## 待辦
 
 - [ ] 旅伴配對 32 句手寫文案（現在是規則生的公版）
-- [ ] 型卡分享圖（canvas，1080×1350）
 - [ ] 真實比例統計（現在 `theoreticalShare()` 是理論值，同號數的型會撞數字）
 - [ ] 收集牆的未解鎖格改成剪影，比現在的灰階更有「未解鎖」感
 - [ ] 16 張「旅人版」壽司插圖（現在用 App 的商品圖）

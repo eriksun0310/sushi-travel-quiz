@@ -33,9 +33,9 @@ export function InviteButton({ code }: { code: TypeCode }) {
     <button
       type="button"
       onClick={share}
-      className="block w-full rounded-xl bg-accent px-5 py-[15px] text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]"
+      className="block w-full rounded-xl border border-line bg-card px-5 py-[13px] text-sm font-medium text-ink-2"
     >
-      {state === 'copied' ? '連結已複製 ✓' : state === 'failed' ? '請手動複製網址' : '產生我的旅伴邀請連結'}
+      {state === 'copied' ? '連結已複製 ✓' : state === 'failed' ? '請手動複製網址' : '把測驗連結丟給旅伴'}
     </button>
   );
 }

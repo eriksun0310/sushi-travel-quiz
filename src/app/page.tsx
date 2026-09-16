@@ -65,7 +65,7 @@ export default async function IntroPage({
         日本旅遊壽司
       </h1>
       <p className="mb-[18px] text-[14.5px] text-ink-2">
-        {QUESTION_COUNT} 個在日本一定會遇到的瞬間，看看你在迴轉帶上是哪一盤。
+        {QUESTION_COUNT} 個在日本一定會遇到的瞬間，看看你是在迴轉帶的哪一種壽司。
       </p>
 
       <div className="mb-6 flex flex-wrap gap-2">

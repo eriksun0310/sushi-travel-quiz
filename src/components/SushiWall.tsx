@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { CATALOG } from '@/content/catalog';
+import { StoreLink } from './StoreLink';
 
 /**
  * 「你的迴轉帶」：App 裡的 26 種壽司，測到的那盤是彩色，其餘只剩剪影。
@@ -43,12 +44,9 @@ export function SushiWall({ mine }: { mine: string }) {
         你的迴轉帶上只有 <b className="text-[17px] font-black text-accent">1</b> 盤
       </p>
 
-      <a
-        href={process.env.NEXT_PUBLIC_APP_STORE_URL ?? '#'}
-        className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]"
-      >
+      <StoreLink className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]">
         去收集其他 {CATALOG.length - 1} 種 →
-      </a>
+      </StoreLink>
     </section>
   );
 }
