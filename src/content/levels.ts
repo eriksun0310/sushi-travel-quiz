@@ -1,6 +1,9 @@
-/** 沿用壽司日檢 App 的 levelColors（constants/tokens.ts）。 */
+/**
+ * 沿用壽司日檢 App 的 levelColors。
+ * 等級不會顯示在畫面上，它只決定卡片顏色 —— 也就是這盤壽司看起來多貴。
+ * 敢花的型別拿 N1/N2（深色、高級），省的型別拿 N4/N5（淺色、樸素）。
+ */
 export type Level = 'N1' | 'N2' | 'N3' | 'N4' | 'N5';
-
 export type LevelColor = { fill: string; stroke: string; ink: string };
 
 export const LEVEL_COLORS: Record<Level, LevelColor> = {

@@ -3,9 +3,8 @@
 import { Suspense, useCallback, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { isTypeCode } from '@/content/axes';
-import { QUESTIONS } from '@/content/questions';
-import { ANSWERS_STORAGE_KEY } from '@/lib/storage';
-import { codeFromScores, scoreAnswers } from '@/lib/score';
+import { codeFromScores, drawQuestions, scoreAnswers } from '@/lib/score';
+import { saveScores } from '@/lib/storage';
 
 const KEYS = ['A', 'B', 'C', 'D'];
 
@@ -22,20 +21,20 @@ function Quiz() {
   const searchParams = useSearchParams();
   const fromParam = searchParams.get('from');
   const from = fromParam && isTypeCode(fromParam) ? fromParam : null;
+
+  // 抽題只做一次，重整才會換一批
+  const [questions] = useState(drawQuestions);
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(() => QUESTIONS.map(() => -1));
+  const [answers, setAnswers] = useState<number[]>(() => questions.map(() => -1));
 
   const finish = useCallback(
     (final: number[]) => {
-      try {
-        sessionStorage.setItem(ANSWERS_STORAGE_KEY, JSON.stringify(final));
-      } catch {
-        // 無痕模式或封鎖 storage 時就算了，結果頁會用型別的預設值
-      }
-      const code = codeFromScores(scoreAnswers(final));
+      const scores = scoreAnswers(questions, final);
+      saveScores(scores);
+      const code = codeFromScores(scores);
       router.push(from ? `/r/${code}?from=${from}` : `/r/${code}`);
     },
-    [router, from],
+    [questions, router, from],
   );
 
   const choose = (option: number) => {
@@ -43,7 +42,7 @@ function Quiz() {
     next[index] = option;
     setAnswers(next);
     window.setTimeout(() => {
-      if (index < QUESTIONS.length - 1) {
+      if (index < questions.length - 1) {
         setIndex(index + 1);
         window.scrollTo(0, 0);
       } else {
@@ -52,7 +51,7 @@ function Quiz() {
     }, 180);
   };
 
-  const question = QUESTIONS[index];
+  const question = questions[index];
 
   return (
     <main className="pb-10 pt-[18px]">
@@ -70,11 +69,11 @@ function Quiz() {
             ← 上一題
           </button>
           <span className="text-xs tabular-nums tracking-[0.06em] text-muted">
-            {String(index + 1).padStart(2, '0')} / {QUESTIONS.length}
+            {String(index + 1).padStart(2, '0')} / {questions.length}
           </span>
         </div>
         <div className="flex gap-[3px]">
-          {QUESTIONS.map((_, i) => (
+          {questions.map((_, i) => (
             <i
               key={i}
               className={`h-1 flex-1 rounded-full transition-colors ${

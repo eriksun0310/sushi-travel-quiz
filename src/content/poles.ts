@@ -1,18 +1,7 @@
 import type { AxisKey } from './axes';
 
-/**
- * 八個極端各一份文案（四軸 × 兩端），16 型由此組合出四張維度卡。
- * key = 軸 + '1'(pos) / '0'(neg)。
- */
-export type Pole = {
-  /** 維度卡上的金句 */
-  quote: string;
-  /** 維度卡的長文 */
-  body: string;
-  /** 口頭禪，兩句 */
-  sayings: [string, string];
-};
-
+/** 八個極端各一份文案（四軸 × 兩端），16 型由此組合出四張維度卡。 */
+export type Pole = { quote: string; body: string; sayings: [string, string] };
 export type PoleKey = `${AxisKey}${'0' | '1'}`;
 
 export const POLES: Record<PoleKey, Pole> = {
@@ -39,12 +28,12 @@ export const POLES: Record<PoleKey, Pole> = {
   s1: {
     quote: "講錯又不會怎樣，不講才真的卡住。",
     body: "你不怕自己日文爛，你怕的是搞不清楚狀況。所以你會問、會確認、會再問一次。這讓你少走很多冤枉路，也讓你拿到一些只有問了才知道的資訊。代價是你偶爾問完聽不懂回答，然後要用更大的力氣把對話拉回來。",
-    sayings: ["すみません——", "我問一下。"],
+    sayings: ["不好意思——", "我問一下。"],
   },
   s0: {
     quote: "能用指的，就不要開口。",
     body: "你其實聽得懂一部分，但要主動開口那一下總是過不去。指、點頭、微笑——這套流程你已經練得很順，順到大部分情況真的可以過關。代價是那些「多問一句就會更好」的時刻你全部跳過了，而你自己知道你跳過了。",
-    sayings: ["這個。（指）", "……はい。"],
+    sayings: ["這個。（指）", "……好。（點頭）"],
   },
   e1: {
     quote: "來都來了，當然要走完。",

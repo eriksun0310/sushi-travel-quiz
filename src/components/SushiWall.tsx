@@ -1,0 +1,53 @@
+import Image from 'next/image';
+import { CATALOG } from '@/content/catalog';
+
+/**
+ * 「你的迴轉帶」：App 裡的 26 種壽司，測到的那盤是彩色，其餘灰掉。
+ * 這裡就是整頁的橋 —— 使用者手上已經有一盤了，剩下的在 App 裡。
+ */
+export function SushiWall({ mine }: { mine: string }) {
+  return (
+    <section className="mb-[30px] rounded-xl border border-line bg-card px-4 py-5 shadow-[var(--shadow-s)]">
+      <h2 className="mb-1 text-center text-[17px] font-black">你的迴轉帶</h2>
+      <p className="mb-[18px] text-center text-[12.5px] text-muted">
+        壽司日檢裡有 {CATALOG.length} 種壽司
+      </p>
+
+      <div className="mb-5 grid grid-cols-6 gap-[9px]">
+        {CATALOG.map((item) => {
+          const owned = item.slug === mine;
+          return (
+            <div
+              key={item.slug}
+              title={owned ? item.name : '未收集'}
+              className={`grid aspect-square place-items-center rounded-md ${
+                owned ? 'shadow-[0_0_0_2px_var(--accent)]' : 'bg-fill'
+              }`}
+            >
+              <Image
+                src={`/sushi/${item.slug}.webp`}
+                alt={owned ? item.name : ''}
+                width={56}
+                height={56}
+                className={`h-[88%] w-[88%] object-contain ${
+                  owned ? '' : 'opacity-35 brightness-[0.55] grayscale'
+                }`}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="mb-4 text-center text-[13px] text-ink-2">
+        你的迴轉帶上只有 <b className="text-[17px] font-black text-accent">1</b> 盤
+      </p>
+
+      <a
+        href={process.env.NEXT_PUBLIC_APP_STORE_URL ?? '#'}
+        className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]"
+      >
+        去收集其他 {CATALOG.length - 1} 種 →
+      </a>
+    </section>
+  );
+}

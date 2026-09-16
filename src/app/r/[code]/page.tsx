@@ -4,34 +4,32 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ALL_CODES, AXES, isTypeCode, type TypeCode } from '@/content/axes';
 import { POLES, type PoleKey } from '@/content/poles';
-import { TOPICS } from '@/content/topics';
 import { TYPES } from '@/content/types';
 import { cautionLine, compatibleLine, inviteLine } from '@/content/pairing';
 import { AxisBars } from '@/components/AxisBars';
 import { PartnerCard } from '@/components/PartnerCard';
+import { SushiWall } from '@/components/SushiWall';
 import { TypeCard } from '@/components/TypeCard';
 import { InviteButton } from '@/components/InviteButton';
 import { cautionCode, compatibleCode, theoreticalShare } from '@/lib/score';
 
 type Params = { code: string };
-type Search = { from?: string };
 
 export function generateStaticParams(): Params[] {
   return ALL_CODES.map((code) => ({ code }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
+/** 只有 16 個合法代碼，其餘一律 404 */
+export const dynamicParams = false;
+
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { code } = await params;
   if (!isTypeCode(code)) return {};
   const type = TYPES[code];
   return {
     title: `${type.name}・${type.tag}`,
     description: `${type.line} — ${type.roast.slice(0, 60)}…`,
-    openGraph: { title: `我的日本旅遊人格是「${type.name}」`, description: type.line },
+    openGraph: { title: `我的日本旅遊壽司是「${type.name}」`, description: type.line },
   };
 }
 
@@ -43,35 +41,32 @@ export default async function ResultPage({
   searchParams,
 }: {
   params: Promise<Params>;
-  searchParams: Promise<Search>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { code } = await params;
   const { from } = await searchParams;
   if (!isTypeCode(code)) notFound();
 
   const type = TYPES[code];
-  const topic = TYPES[code].topic;
   const poles = polesFor(code);
   const inviter = from && isTypeCode(from) ? TYPES[from] : null;
 
   return (
     <>
-      <main className="pb-[30px] pt-[26px]">
+      <main className="pb-[30px] pt-[22px]">
         {inviter && (
-          <div className="mb-6 rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-4">
-            <p className="m-0 text-[13px] leading-[1.8] text-ink-2">
-              邀請你的人是<strong className="font-bold text-ink">{inviter.name}</strong>型。
-              {inviteLine(code, inviter.code)}
-            </p>
+          <div className="mb-6 rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-4 text-[13px] leading-[1.8] text-ink-2">
+            邀請你的人是<strong className="font-bold text-ink">{inviter.name}</strong>型。
+            {inviteLine(code, inviter.code)}
           </div>
         )}
 
-        <p className="mb-3.5 text-center text-[11px] font-medium tracking-[0.16em] text-muted">
-          你的日本旅遊人格是
+        <p className="mb-3.5 text-center text-[11px] tracking-[0.16em] text-muted">
+          你的日本旅遊壽司是
         </p>
         <TypeCard type={type} />
 
-        <p className="mx-auto mb-7 w-fit rounded-full bg-fill px-4 py-1.5 text-center text-[12.5px] tabular-nums text-ink-2">
+        <p className="mx-auto mb-[26px] w-fit rounded-full bg-fill px-4 py-1.5 text-center text-[12.5px] tabular-nums text-ink-2">
           理論上約 {theoreticalShare(code).toFixed(1)}% 的人和你一樣
         </p>
 
@@ -92,7 +87,7 @@ export default async function ResultPage({
         </div>
 
         <h2 className="mb-3.5 text-[17px] font-black">你的四個旅遊維度</h2>
-        <div className="mb-[34px] grid gap-3">
+        <div className="mb-[30px] grid gap-3">
           {AXES.map((axis, i) => (
             <section
               key={axis.key}
@@ -114,22 +109,6 @@ export default async function ResultPage({
 
         <AxisBars code={code} />
 
-        <div className="mb-9 rounded-xl bg-fill px-5 pb-[22px] pt-5">
-          <span className="mb-3 inline-flex items-center gap-[7px] text-xs tracking-[0.04em] text-muted">
-            你最該補的是 ·&nbsp;
-            <em className="not-italic font-bold text-accent">
-              {TOPICS[topic].label} {TOPICS[topic].emoji} · {TOPICS[topic].wordCount} 字
-            </em>
-          </span>
-          <p className="mb-4 text-[15px] leading-[1.85]">{type.bridge}</p>
-          <a
-            href={process.env.NEXT_PUBLIC_APP_STORE_URL ?? '#'}
-            className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]"
-          >
-            打開壽司日檢的〈{TOPICS[topic].label}〉主題包 →
-          </a>
-        </div>
-
         <h2 className="mb-3.5 text-[17px] font-black">旅伴參考座標</h2>
         <div className="mb-3 grid grid-cols-2 gap-2.5">
           <PartnerCard
@@ -146,13 +125,15 @@ export default async function ResultPage({
           />
         </div>
         <p className="mb-[34px] text-center text-[11.5px] leading-[1.7] text-muted">
-          這只是輕鬆的相處參考，不代表你們不能一起去日本。真正的問題通常出在晚餐要吃什麼。
+          這只是輕鬆的相處參考。真正的問題通常出在晚餐要吃什麼。
         </p>
+
+        <SushiWall mine={type.slug} />
 
         <div className="mb-[22px] rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-5">
           <h2 className="mb-2 text-[17px] font-black">找你的旅伴一起測</h2>
           <p className="mb-4 text-[13.5px] leading-[1.8] text-ink-2">
-            把連結丟給下次要一起去日本的人。他測完之後，會直接看到你們兩個的組合。
+            把連結丟給下次要一起去日本的人。他測完之後，會看到你們兩個的組合。
           </p>
           <InviteButton code={code} />
         </div>
@@ -162,7 +143,7 @@ export default async function ResultPage({
             href="/types"
             className="block rounded-lg border border-line bg-card py-[13px] text-center text-[13.5px] font-medium text-ink-2"
           >
-            查看 16 種類型
+            查看 {ALL_CODES.length} 種
           </Link>
           <Link
             href="/quiz"
@@ -183,8 +164,8 @@ export default async function ResultPage({
             className="h-[52px] w-[52px] rounded-xl shadow-[var(--shadow-s)]"
           />
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-bold leading-[1.35]">壽司日檢 — 5 分鐘背日文單字</div>
-            <div className="text-[11.5px] text-muted">N5–N1 單字．主題包．例句發音</div>
+            <div className="text-sm font-bold leading-[1.35]">壽司日檢</div>
+            <div className="text-[11.5px] text-muted">背單字，收集壽司</div>
           </div>
           <a
             href={process.env.NEXT_PUBLIC_APP_STORE_URL ?? '#'}
@@ -195,7 +176,6 @@ export default async function ResultPage({
         </div>
       </main>
 
-      {/* 固定底部下載列 */}
       <div
         className="fixed inset-x-0 bottom-0 z-20 border-t border-line-2 bg-bg/90 px-[18px] backdrop-blur-md"
         style={{ paddingTop: 10, paddingBottom: 'calc(10px + env(safe-area-inset-bottom, 0px))' }}
@@ -213,6 +193,3 @@ export default async function ResultPage({
     </>
   );
 }
-
-/** 只有 16 個合法代碼，其餘一律 404 */
-export const dynamicParams = false;

@@ -12,16 +12,11 @@ const notoSansTC = Noto_Sans_TC({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   title: {
-    default: '壽司旅人測驗｜你去日本的樣子其實是一種壽司',
-    template: '%s｜壽司旅人測驗',
+    default: '壽司旅人｜測測你是哪一種日本旅遊壽司',
+    template: '%s｜壽司旅人',
   },
-  description:
-    '16 個在日本一定會遇到的情境，算出你的旅遊人格，以及你每次都卡在哪幾個字。來自壽司日檢。',
-  openGraph: {
-    type: 'website',
-    siteName: '壽司旅人測驗',
-    locale: 'zh_TW',
-  },
+  description: '16 個在日本一定會遇到的瞬間，看看你在迴轉帶上是哪一盤。來自壽司日檢。',
+  openGraph: { type: 'website', siteName: '壽司旅人', locale: 'zh_TW' },
   twitter: { card: 'summary_large_image' },
 };
 

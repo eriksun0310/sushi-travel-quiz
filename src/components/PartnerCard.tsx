@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { LEVEL_COLORS } from '@/content/levels';
 import type { SushiType } from '@/content/types';
-import { codeLabel } from '@/lib/score';
 
 export function PartnerCard({
   type,
@@ -37,10 +36,7 @@ export function PartnerCard({
         />
       </div>
       <div className="text-base font-black leading-[1.3]">{type.name}</div>
-      <div className="mt-0.5 text-[10.5px] tracking-[0.14em] text-muted">
-        {codeLabel(type.code)}
-      </div>
-      <div className="mt-[9px] text-xs leading-[1.65] text-ink-2">{line}</div>
+      <div className="mt-2 text-xs leading-[1.65] text-ink-2">{line}</div>
     </div>
   );
 }

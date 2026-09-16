@@ -6,7 +6,7 @@ import { loadNotoSansTC } from '@/lib/og-font';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = '你的日本旅遊人格';
+export const alt = '你的日本旅遊壽司';
 
 export default async function OgImage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
@@ -14,8 +14,8 @@ export default async function OgImage({ params }: { params: Promise<{ code: stri
   const type = TYPES[isTypeCode(code) ? code : '0000'];
   const color = LEVEL_COLORS[type.level];
 
-  const eyebrow = '你的日本旅遊人格是';
-  const footer = '壽司日檢 · 旅人測驗';
+  const eyebrow = '你的日本旅遊壽司是';
+  const footer = '壽司旅人 · 來自壽司日檢';
   const font = await loadNotoSansTC(eyebrow + type.name + type.tag + type.line + footer);
 
   return new ImageResponse(

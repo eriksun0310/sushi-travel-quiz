@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { AXES, type TypeCode } from '@/content/axes';
-import { AXIS_MAX, axisPercent, scoreAnswers, type Scores } from '@/lib/score';
-import { readAnswers } from '@/lib/storage';
+import { AXIS_MAX, axisPercent, type Scores } from '@/lib/score';
+import { readScores } from '@/lib/storage';
 
 /**
- * 自己測完的人會看到真實落點；從分享連結進來的人沒有作答紀錄，
- * 就用該型每個軸的中間值，一樣看得懂偏哪一邊。
+ * 自己測完的人看到真實落點；從分享連結進來的人沒有作答紀錄，
+ * 就用該型每個軸的中間值，一樣看得出偏哪一邊。
  */
 function fallbackScores(code: TypeCode): Scores {
   const half = Math.round(AXIS_MAX / 2);
   const out = {} as Scores;
-  AXES.forEach((a, i) => {
-    out[a.key] = code[i] === '1' ? half : -half;
+  AXES.forEach((axis, i) => {
+    out[axis.key] = code[i] === '1' ? half : -half;
   });
   return out;
 }
@@ -22,13 +22,13 @@ export function AxisBars({ code }: { code: TypeCode }) {
   const [scores, setScores] = useState<Scores>(() => fallbackScores(code));
 
   useEffect(() => {
-    const answers = readAnswers();
-    if (answers) setScores(scoreAnswers(answers));
+    const saved = readScores();
+    if (saved) setScores(saved);
   }, []);
 
   return (
-    <div className="mb-8 grid gap-4">
-      {AXES.map((axis, i) => {
+    <div className="mb-[34px] grid gap-4">
+      {AXES.map((axis) => {
         const value = scores[axis.key];
         const positive = value >= 0;
         return (
