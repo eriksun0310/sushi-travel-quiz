@@ -2,8 +2,11 @@ import Image from 'next/image';
 import { CATALOG } from '@/content/catalog';
 
 /**
- * 「你的迴轉帶」：App 裡的 26 種壽司，測到的那盤是彩色，其餘灰掉。
- * 這裡就是整頁的橋 —— 使用者手上已經有一盤了，剩下的在 App 裡。
+ * 「你的迴轉帶」：App 裡的 26 種壽司，測到的那盤是彩色，其餘只剩剪影。
+ *
+ * 這裡的格子**不能點開**。剪影本身就是訊息 ——「你只有一盤，其他都還沒有」，
+ * 一旦可以翻開看，那個「還沒有」就消失了，收集的理由也跟著沒了。
+ * 想看其他盤的唯一方法是下載 App。
  */
 export function SushiWall({ mine }: { mine: string }) {
   return (
@@ -19,7 +22,7 @@ export function SushiWall({ mine }: { mine: string }) {
           return (
             <div
               key={item.slug}
-              title={owned ? item.name : '未收集'}
+              title={owned ? item.name : '還沒收集'}
               className={`grid aspect-square place-items-center rounded-md ${
                 owned ? 'shadow-[0_0_0_2px_var(--accent)]' : 'bg-fill'
               }`}
@@ -29,9 +32,7 @@ export function SushiWall({ mine }: { mine: string }) {
                 alt={owned ? item.name : ''}
                 width={56}
                 height={56}
-                className={`h-[88%] w-[88%] object-contain ${
-                  owned ? '' : 'opacity-35 brightness-[0.55] grayscale'
-                }`}
+                className={`object-contain ${owned ? 'h-[88%] w-[88%]' : 'silhouette h-[76%] w-[76%]'}`}
               />
             </div>
           );

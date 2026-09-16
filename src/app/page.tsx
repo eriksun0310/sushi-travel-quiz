@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ALL_CODES, AXES, isTypeCode } from '@/content/axes';
 import { QUESTIONS_PER_AXIS } from '@/content/questions';
 import { TYPES } from '@/content/types';
+import { TypeFlipGrid } from '@/components/TypeFlipGrid';
 
 const BELT = [
   'SU-N4-salmon',
@@ -90,23 +91,13 @@ export default async function IntroPage({
       </Link>
 
       {/* 還沒測就先看到有 16 種可以拿 —— 收集的念頭提早發生 */}
-      <Link href="/types" className="mt-9 block">
-        <p className="mb-3 text-center text-[12.5px] text-muted">
-          {ALL_CODES.length} 種壽司旅人，你是哪一盤？
-        </p>
-        <div className="grid grid-cols-4 gap-2">
-          {ALL_CODES.map((code) => (
-            <div key={code} className="grid aspect-square place-items-center rounded-md bg-fill">
-              <Image
-                src={`/sushi/${TYPES[code].slug}.webp`}
-                alt={TYPES[code].name}
-                width={72}
-                height={72}
-                className="h-[78%] w-[78%] object-contain"
-              />
-            </div>
-          ))}
-        </div>
+      <TypeFlipGrid />
+
+      <Link
+        href="/types"
+        className="mt-5 block text-center text-[12.5px] text-muted underline underline-offset-4"
+      >
+        看 16 型的完整說明 →
       </Link>
     </main>
   );

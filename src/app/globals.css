@@ -12,6 +12,8 @@
   --fill: #f1f1ed;
   /* 迴轉帶底色。深色模式要比頁面「更深」，壽司才浮得出來 */
   --belt: #ececea;
+  /* 未收集 / 未翻開的壽司只剩輪廓 */
+  --silhouette: brightness(0) opacity(0.22);
   --accent: #c44830;
   --green: #4a9a5a;
   --warn: #cf9e3a;
@@ -31,6 +33,7 @@
     --line-2: #272724;
     --fill: #232320;
     --belt: #0e0e0c;
+    --silhouette: brightness(0) invert(1) opacity(0.2);
     --accent: #e0705a;
     --green: #63b073;
     --warn: #ddb05a;
@@ -88,4 +91,45 @@ body {
 @keyframes roll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+.silhouette {
+  filter: var(--silhouette);
+}
+
+/* 翻卡。preserve-3d + backface-visibility，不需要任何套件。
+   prefers-reduced-motion 由上面的全域規則接管，動畫會變成瞬間切換。 */
+.flip-card {
+  perspective: 600px;
+  display: block;
+  width: 100%;
+}
+
+.flip-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-inner[data-flipped] {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
 }
