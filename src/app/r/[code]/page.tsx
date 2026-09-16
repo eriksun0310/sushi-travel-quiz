@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ALL_CODES, AXES, isTypeCode, type TypeCode } from '@/content/axes';
+import { DIMENSIONS } from '@/content/dimensions';
 import { POLES, type PoleKey } from '@/content/poles';
 import { TYPES } from '@/content/types';
 import { cautionLine, compatibleLine, inviteLine } from '@/content/pairing';
@@ -61,6 +62,7 @@ export default async function ResultPage({
 
   const type = TYPES[code];
   const poles = polesFor(code);
+  const dimensions = DIMENSIONS[code];
   const inviter = from && isTypeCode(from) ? TYPES[from] : null;
 
   return (
@@ -114,7 +116,7 @@ export default async function ResultPage({
               <span className="mb-[13px] block rounded-md bg-fill px-[13px] py-[9px] text-[13px] font-bold text-accent">
                 {poles[i].quote}
               </span>
-              <p className="m-0 text-[14.5px] leading-[1.95] text-ink-2">{poles[i].body}</p>
+              <p className="m-0 text-[14.5px] leading-[1.95] text-ink-2">{dimensions[i]}</p>
             </section>
           ))}
         </div>
