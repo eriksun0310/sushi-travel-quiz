@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/* 色票、圓角、字級全部沿用壽司日檢 App 的 constants/tokens.ts */
+:root {
+  --bg: #fafaf7;
+  --card: #ffffff;
+  --ink: #1a1a1a;
+  --ink-2: #4a4a46;
+  --muted: #8a8a86;
+  --line: #d6d6d2;
+  --line-2: #ececea;
+  --fill: #f1f1ed;
+  --accent: #c44830;
+  --green: #4a9a5a;
+  --warn: #cf9e3a;
+
+  --shadow-s: 0 1px 2px rgba(26, 26, 26, 0.05);
+  --shadow-m: 0 1px 2px rgba(26, 26, 26, 0.05), 0 10px 26px -14px rgba(26, 26, 26, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141412;
+    --card: #1e1e1b;
+    --ink: #f0efe9;
+    --ink-2: #c9c7be;
+    --muted: #8e8c84;
+    --line: #35352f;
+    --line-2: #272724;
+    --fill: #232320;
+    --accent: #e0705a;
+    --green: #63b073;
+    --warn: #ddb05a;
+
+    --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-m: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 26px -14px rgba(0, 0, 0, 0.7);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-fill: var(--fill);
+  --color-accent: var(--accent);
+  --color-good: var(--green);
+  --color-warn: var(--warn);
+
+  --font-sans: var(--font-noto-sans-tc), "PingFang TC", "Hiragino Maru Gothic ProN",
+    ui-sans-serif, system-ui, sans-serif;
+
+  /* App 的 radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes roll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
