@@ -28,16 +28,16 @@ export default async function IntroPage({
 
   return (
     <main className="pb-11 pt-[30px]">
-      <div className="relative mb-6 h-[104px] overflow-hidden rounded-md border-y border-line bg-line-2">
-        <div className="animate-[roll_24s_linear_infinite] absolute bottom-4 left-0 flex gap-[26px]">
+      <div className="relative mb-6 h-[152px] overflow-hidden rounded-md border-y border-line bg-line-2">
+        <div className="animate-[roll_24s_linear_infinite] absolute bottom-[20px] left-0 flex gap-[20px]">
           {[...BELT, ...BELT].map((slug, i) => (
             <Image
               key={`${slug}-${i}`}
               src={`/sushi/${slug}.webp`}
               alt=""
-              width={58}
-              height={58}
-              className="h-[58px] w-[58px] object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)]"
+              width={96}
+              height={96}
+              className="h-[96px] w-[96px] object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.16)]"
               priority={i < 4}
             />
           ))}
