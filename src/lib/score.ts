@@ -15,12 +15,22 @@ function shuffle<T>(items: readonly T[]): T[] {
   return out;
 }
 
-/** 每軸抽 QUESTIONS_PER_AXIS 題再整份打散。重測會拿到不同題目。 */
-export function drawQuestions(): Question[] {
+/**
+ * 每軸抽 QUESTIONS_PER_AXIS 題再整份打散。
+ *
+ * seen 是「上一輪抽到的題號」。每軸會優先抽沒看過的，不夠才回頭補看過的。
+ * 每軸題庫 8 題、每次抽 4 題，所以測完立刻再測一次，拿到的是完全沒看過的另外 4 題。
+ * 只記上一輪、不是累積，否則抽個三輪題庫就空了。
+ */
+export function drawQuestions(seen: readonly string[] = []): Question[] {
+  const seenSet = new Set(seen);
   return shuffle(
-    AXES.flatMap((axis) =>
-      shuffle(QUESTION_POOL.filter((q) => q.axis === axis.key)).slice(0, QUESTIONS_PER_AXIS),
-    ),
+    AXES.flatMap((axis) => {
+      const pool = QUESTION_POOL.filter((q) => q.axis === axis.key);
+      const fresh = shuffle(pool.filter((q) => !seenSet.has(q.id)));
+      const rest = shuffle(pool.filter((q) => seenSet.has(q.id)));
+      return [...fresh, ...rest].slice(0, QUESTIONS_PER_AXIS);
+    }),
   );
 }
 
@@ -83,7 +93,7 @@ export function theoreticalShare(code: TypeCode): number {
 /** 分數換成 6%–94%，兩端留白讓圓點不被切掉 */
 export function axisPercent(value: number): number {
   const t = (value + AXIS_MAX) / (AXIS_MAX * 2);
-  return 6 + Math.min(1, Math.max(0, t)) * 88;
+  return 94 - Math.min(1, Math.max(0, t)) * 88;
 }
 
 export { ALL_CODES };

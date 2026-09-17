@@ -4,7 +4,7 @@ import { Suspense, useCallback, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { isTypeCode } from '@/content/axes';
 import { codeFromScores, drawQuestions, scoreAnswers } from '@/lib/score';
-import { saveScores } from '@/lib/storage';
+import { readSeenQuestions, saveScores, saveSeenQuestions } from '@/lib/storage';
 
 const KEYS = ['A', 'B', 'C', 'D'];
 
@@ -22,8 +22,8 @@ function Quiz() {
   const fromParam = searchParams.get('from');
   const from = fromParam && isTypeCode(fromParam) ? fromParam : null;
 
-  // 抽題只做一次，重整才會換一批
-  const [questions] = useState(drawQuestions);
+  // 抽題只做一次，重整才會換一批；避開上一輪出過的題目
+  const [questions] = useState(() => drawQuestions(readSeenQuestions()));
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<number[]>(() => questions.map(() => -1));
 
@@ -31,6 +31,7 @@ function Quiz() {
     (final: number[]) => {
       const scores = scoreAnswers(questions, final);
       saveScores(scores);
+      saveSeenQuestions(questions.map((q) => q.id));
       const code = codeFromScores(scores);
       router.push(from ? `/r/${code}?from=${from}` : `/r/${code}`);
     },
