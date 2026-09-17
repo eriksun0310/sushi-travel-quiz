@@ -31,6 +31,8 @@ export function AxisBars({ code }: { code: TypeCode }) {
       {AXES.map((axis) => {
         const value = scores[axis.key];
         const positive = value >= 0;
+        // 條子從中線往圓點的方向長出來：偏得越多越長，正中間就是空的
+        const percent = axisPercent(value);
         return (
           <div key={axis.key} className="grid gap-[7px]">
             <div className="flex justify-between text-[11.5px] text-muted">
@@ -40,8 +42,15 @@ export function AxisBars({ code }: { code: TypeCode }) {
             <div className="relative h-1.5 rounded-full bg-line-2">
               <span className="absolute -top-1 bottom-[-4px] left-1/2 w-px bg-line" />
               <span
+                className="absolute inset-y-0 rounded-full bg-accent transition-all duration-500"
+                style={{
+                  left: `${Math.min(50, percent).toFixed(1)}%`,
+                  width: `${Math.abs(percent - 50).toFixed(1)}%`,
+                }}
+              />
+              <span
                 className="absolute top-1/2 h-[13px] w-[13px] -translate-x-1/2 -translate-y-1/2 rounded-full border-[2.5px] border-card bg-accent shadow-[var(--shadow-s)] transition-[left] duration-500"
-                style={{ left: `${axisPercent(value).toFixed(1)}%` }}
+                style={{ left: `${percent.toFixed(1)}%` }}
                 aria-label={`${axis.pos} 到 ${axis.neg}：${value}`}
               />
             </div>
