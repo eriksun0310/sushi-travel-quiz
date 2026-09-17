@@ -8,6 +8,7 @@ import { POLES, type PoleKey } from '@/content/poles';
 import { TYPES } from '@/content/types';
 import { cautionLine, compatibleLine, inviteLine } from '@/content/pairing';
 import { AxisBars } from '@/components/AxisBars';
+import { MineSwitch } from '@/components/MineSwitch';
 import { PartnerCard } from '@/components/PartnerCard';
 import { SushiWall } from '@/components/SushiWall';
 import { TypeCard } from '@/components/TypeCard';
@@ -49,6 +50,174 @@ const sayingFor = (code: TypeCode, axisIndex: number) => {
   return parseInt(rest, 2) % 4;
 };
 
+/**
+ * 同一型有兩種身分可以看：
+ *
+ * - mine：剛測完的人。可以存圖、可以邀人，收集牆上有他那一盤。
+ * - 不是 mine：從 16 型一覽或別人貼的連結點進來的。內容照給 ——
+ *   壽司卡、吐槽、口頭禪、四張維度卡、旅伴都一樣，藏起來只會讓人不想逛；
+ *   拿掉的是「分享」與「四軸落點」，因為那兩個是作答的產物，不是這一型的資料。
+ */
+function ResultBody({ code, from, mine }: { code: TypeCode; from?: string; mine: boolean }) {
+  const type = TYPES[code];
+  const poles = polesFor(code);
+  const dimensions = DIMENSIONS[code];
+  const inviter = from && isTypeCode(from) ? TYPES[from] : null;
+
+  return (
+    <main className="pb-[30px] pt-[22px]">
+      {mine && inviter && (
+        <div className="mb-6 rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-4 text-[13px] leading-[1.8] text-ink-2">
+          邀請你的人是<strong className="font-bold text-ink">{inviter.name}</strong>型。
+          {inviteLine(code, inviter.code)}
+        </div>
+      )}
+
+      {!mine && (
+        <div className="mb-6 rounded-xl border border-line bg-fill px-[18px] py-4 text-[13px] leading-[1.8] text-ink-2">
+          這是壽司旅人的其中一型，<strong className="font-bold text-ink">不是你的結果</strong>。
+        </div>
+      )}
+
+      <p className="mb-3.5 text-center text-[11px] tracking-[0.16em] text-muted">
+        {mine ? '你的日本旅遊壽司是' : '壽司旅人的其中一型'}
+      </p>
+      <TypeCard type={type} />
+
+      <p className="mx-auto mb-[26px] w-fit rounded-full bg-fill px-4 py-1.5 text-center text-[12.5px] tabular-nums text-ink-2">
+        理論上約 {theoreticalShare(code).toFixed(1)}% 的人{mine ? '和你一樣' : '是這一型'}
+      </p>
+
+      <p className="mb-[30px] border-l-[3px] border-accent pl-4 text-[15.5px] leading-[1.95]">
+        {type.roast}
+      </p>
+
+      <h2 className="mb-3.5 text-[17px] font-black">這型的口頭禪</h2>
+      <div className="mb-[34px] flex flex-wrap gap-2">
+        {poles.map((pole, i) => (
+          <span
+            key={i}
+            className="rounded-full border border-dashed border-line px-[13px] py-[5px] text-[12.5px] text-ink-2"
+          >
+            {pole.sayings[sayingFor(code, i)]}
+          </span>
+        ))}
+      </div>
+
+      <h2 className="mb-3.5 text-[17px] font-black">
+        {mine ? '你的四個旅遊維度' : '這型的四個旅遊維度'}
+      </h2>
+      <div className="mb-[30px] grid gap-3">
+        {AXES.map((axis, i) => (
+          <section
+            key={axis.key}
+            className="rounded-xl border border-line-2 bg-card px-[18px] pb-5 pt-[18px] shadow-[var(--shadow-s)]"
+          >
+            <h3 className="mb-3 text-base font-black">
+              {axis.title}
+              <span className="ml-2 text-xs font-medium text-muted">
+                {code[i] === '1' ? axis.pos : axis.neg}
+              </span>
+            </h3>
+            <span className="mb-[13px] block rounded-md bg-fill px-[13px] py-[9px] text-[13px] font-bold text-accent">
+              {poles[i].quote}
+            </span>
+            <p className="m-0 text-[14.5px] leading-[1.95] text-ink-2">{dimensions[i]}</p>
+          </section>
+        ))}
+      </div>
+
+      {/* 落點是「你答出來的分數」，沒作答就沒有這東西 */}
+      {mine && <AxisBars code={code} />}
+
+      <h2 className="mb-3.5 text-[17px] font-black">旅伴參考座標</h2>
+      <div className="mb-3 grid grid-cols-2 gap-2.5">
+        <PartnerCard
+          type={TYPES[compatibleCode(code)]}
+          label="合拍的旅伴"
+          tone="good"
+          line={compatibleLine(code)}
+        />
+        <PartnerCard
+          type={TYPES[cautionCode(code)]}
+          label="要小心的旅伴"
+          tone="caution"
+          line={cautionLine(code)}
+        />
+      </div>
+      <p className="mb-[34px] text-center text-[11.5px] leading-[1.7] text-muted">
+        這只是輕鬆的相處參考。真正的問題通常出在晚餐要吃什麼。
+      </p>
+
+      <SushiWall mine={mine ? type.slug : undefined} />
+
+      {mine ? (
+        <>
+          <div className="mb-[22px] rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-5">
+            <h2 className="mb-2 text-[17px] font-black">分享你這一盤</h2>
+            <p className="mb-4 text-[13.5px] leading-[1.8] text-ink-2">
+              存成圖片發限動，或把連結丟給下次要一起去日本的人 —— 他測完會看到你們兩個的組合。
+            </p>
+            <ShareCardButton code={code} />
+            <div className="mt-2.5">
+              <InviteButton code={code} />
+            </div>
+          </div>
+
+          <div className="mb-6 grid grid-cols-2 gap-2.5">
+            <Link
+              href="/types"
+              className="block rounded-lg border border-line bg-card py-[13px] text-center text-[13.5px] font-medium text-ink-2"
+            >
+              查看 {ALL_CODES.length} 種
+            </Link>
+            <Link
+              href="/quiz"
+              className="block rounded-lg border border-line bg-card py-[13px] text-center text-[13.5px] font-medium text-ink-2"
+            >
+              再測一次
+            </Link>
+          </div>
+        </>
+      ) : (
+        <div className="mb-6">
+          <Link
+            href="/quiz"
+            className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]"
+          >
+            測測我是哪一型 →
+          </Link>
+          <Link
+            href="/types"
+            className="mt-2.5 block rounded-lg border border-line bg-card py-[13px] text-center text-[13.5px] font-medium text-ink-2"
+          >
+            回 {ALL_CODES.length} 種壽司
+          </Link>
+        </div>
+      )}
+
+      <p className="mb-[22px] text-center text-[11.5px] text-muted">以上測驗來自壽司日檢 App</p>
+
+      <div className="flex items-center gap-3 border-t border-line-2 pt-5">
+        <Image
+          src="/appicon.png"
+          alt="壽司日檢"
+          width={52}
+          height={52}
+          className="h-[52px] w-[52px] rounded-xl shadow-[var(--shadow-s)]"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-bold leading-[1.35]">壽司日檢</div>
+          <div className="text-[11.5px] text-muted">背單字，收集壽司</div>
+        </div>
+        <StoreLink className="shrink-0 rounded-full bg-accent px-3.5 py-2 text-xs font-bold text-white">
+          下載
+        </StoreLink>
+      </div>
+    </main>
+  );
+}
+
 export default async function ResultPage({
   params,
   searchParams,
@@ -60,135 +229,13 @@ export default async function ResultPage({
   const { from } = await searchParams;
   if (!isTypeCode(code)) notFound();
 
-  const type = TYPES[code];
-  const poles = polesFor(code);
-  const dimensions = DIMENSIONS[code];
-  const inviter = from && isTypeCode(from) ? TYPES[from] : null;
-
   return (
     <>
-      <main className="pb-[30px] pt-[22px]">
-        {inviter && (
-          <div className="mb-6 rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-4 text-[13px] leading-[1.8] text-ink-2">
-            邀請你的人是<strong className="font-bold text-ink">{inviter.name}</strong>型。
-            {inviteLine(code, inviter.code)}
-          </div>
-        )}
-
-        <p className="mb-3.5 text-center text-[11px] tracking-[0.16em] text-muted">
-          你的日本旅遊壽司是
-        </p>
-        <TypeCard type={type} />
-
-        <p className="mx-auto mb-[26px] w-fit rounded-full bg-fill px-4 py-1.5 text-center text-[12.5px] tabular-nums text-ink-2">
-          理論上約 {theoreticalShare(code).toFixed(1)}% 的人和你一樣
-        </p>
-
-        <p className="mb-[30px] border-l-[3px] border-accent pl-4 text-[15.5px] leading-[1.95]">
-          {type.roast}
-        </p>
-
-        <h2 className="mb-3.5 text-[17px] font-black">這型的口頭禪</h2>
-        <div className="mb-[34px] flex flex-wrap gap-2">
-          {poles.map((pole, i) => (
-            <span
-              key={i}
-              className="rounded-full border border-dashed border-line px-[13px] py-[5px] text-[12.5px] text-ink-2"
-            >
-              {pole.sayings[sayingFor(code, i)]}
-            </span>
-          ))}
-        </div>
-
-        <h2 className="mb-3.5 text-[17px] font-black">你的四個旅遊維度</h2>
-        <div className="mb-[30px] grid gap-3">
-          {AXES.map((axis, i) => (
-            <section
-              key={axis.key}
-              className="rounded-xl border border-line-2 bg-card px-[18px] pb-5 pt-[18px] shadow-[var(--shadow-s)]"
-            >
-              <h3 className="mb-3 text-base font-black">
-                {axis.title}
-                <span className="ml-2 text-xs font-medium text-muted">
-                  {code[i] === '1' ? axis.pos : axis.neg}
-                </span>
-              </h3>
-              <span className="mb-[13px] block rounded-md bg-fill px-[13px] py-[9px] text-[13px] font-bold text-accent">
-                {poles[i].quote}
-              </span>
-              <p className="m-0 text-[14.5px] leading-[1.95] text-ink-2">{dimensions[i]}</p>
-            </section>
-          ))}
-        </div>
-
-        <AxisBars code={code} />
-
-        <h2 className="mb-3.5 text-[17px] font-black">旅伴參考座標</h2>
-        <div className="mb-3 grid grid-cols-2 gap-2.5">
-          <PartnerCard
-            type={TYPES[compatibleCode(code)]}
-            label="合拍的旅伴"
-            tone="good"
-            line={compatibleLine(code)}
-          />
-          <PartnerCard
-            type={TYPES[cautionCode(code)]}
-            label="要小心的旅伴"
-            tone="caution"
-            line={cautionLine(code)}
-          />
-        </div>
-        <p className="mb-[34px] text-center text-[11.5px] leading-[1.7] text-muted">
-          這只是輕鬆的相處參考。真正的問題通常出在晚餐要吃什麼。
-        </p>
-
-        <SushiWall mine={type.slug} />
-
-        <div className="mb-[22px] rounded-xl border border-accent bg-accent/[0.05] px-[18px] py-5">
-          <h2 className="mb-2 text-[17px] font-black">分享你這一盤</h2>
-          <p className="mb-4 text-[13.5px] leading-[1.8] text-ink-2">
-            存成圖片發限動，或把連結丟給下次要一起去日本的人 —— 他測完會看到你們兩個的組合。
-          </p>
-          <ShareCardButton code={code} />
-          <div className="mt-2.5">
-            <InviteButton code={code} />
-          </div>
-        </div>
-
-        <div className="mb-6 grid grid-cols-2 gap-2.5">
-          <Link
-            href="/types"
-            className="block rounded-lg border border-line bg-card py-[13px] text-center text-[13.5px] font-medium text-ink-2"
-          >
-            查看 {ALL_CODES.length} 種
-          </Link>
-          <Link
-            href="/quiz"
-            className="block rounded-lg border border-line bg-card py-[13px] text-center text-[13.5px] font-medium text-ink-2"
-          >
-            再測一次
-          </Link>
-        </div>
-
-        <p className="mb-[22px] text-center text-[11.5px] text-muted">以上測驗來自壽司日檢 App</p>
-
-        <div className="flex items-center gap-3 border-t border-line-2 pt-5">
-          <Image
-            src="/appicon.png"
-            alt="壽司日檢"
-            width={52}
-            height={52}
-            className="h-[52px] w-[52px] rounded-xl shadow-[var(--shadow-s)]"
-          />
-          <div className="min-w-0 flex-1">
-            <div className="text-sm font-bold leading-[1.35]">壽司日檢</div>
-            <div className="text-[11.5px] text-muted">背單字，收集壽司</div>
-          </div>
-          <StoreLink className="shrink-0 rounded-full bg-accent px-3.5 py-2 text-xs font-bold text-white">
-            下載
-          </StoreLink>
-        </div>
-      </main>
+      <MineSwitch
+        code={code}
+        mine={<ResultBody code={code} from={from} mine />}
+        other={<ResultBody code={code} from={from} mine={false} />}
+      />
 
       <div
         className="fixed inset-x-0 bottom-0 z-20 border-t border-line-2 bg-bg/90 px-[18px] backdrop-blur-md"

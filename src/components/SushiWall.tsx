@@ -8,11 +8,16 @@ import { StoreLink } from './StoreLink';
  * 這裡的格子**不能點開**。剪影本身就是訊息 ——「你只有一盤，其他都還沒有」，
  * 一旦可以翻開看，那個「還沒有」就消失了，收集的理由也跟著沒了。
  * 想看其他盤的唯一方法是下載 App。
+ *
+ * 沒有 mine（不是自己測出來的那一頁）時全部都是剪影，文案也跟著換成邀請的語氣：
+ * 這時候講「你的迴轉帶上只有 1 盤」是假的，那個人一盤都還沒有。
  */
-export function SushiWall({ mine }: { mine: string }) {
+export function SushiWall({ mine }: { mine?: string }) {
   return (
     <section className="mb-[30px] rounded-xl border border-line bg-card px-4 py-5 shadow-[var(--shadow-s)]">
-      <h2 className="mb-1 text-center text-[17px] font-black">你的迴轉帶</h2>
+      <h2 className="mb-1 text-center text-[17px] font-black">
+        {mine ? '你的迴轉帶' : '壽司日檢的迴轉帶'}
+      </h2>
       <p className="mb-[18px] text-center text-[12.5px] text-muted">
         壽司日檢裡有 {CATALOG.length} 種壽司
       </p>
@@ -41,11 +46,19 @@ export function SushiWall({ mine }: { mine: string }) {
       </div>
 
       <p className="mb-4 text-center text-[13px] text-ink-2">
-        你的迴轉帶上只有 <b className="text-[17px] font-black text-accent">1</b> 盤
+        {mine ? (
+          <>
+            你的迴轉帶上只有 <b className="text-[17px] font-black text-accent">1</b> 盤
+          </>
+        ) : (
+          <>
+            測完會拿到其中 <b className="text-[17px] font-black text-accent">1</b> 盤
+          </>
+        )}
       </p>
 
       <StoreLink className="block rounded-xl bg-accent px-5 py-[15px] text-center text-base font-bold text-white shadow-[var(--shadow-m)] transition-transform active:scale-[0.985]">
-        去收集其他 {CATALOG.length - 1} 種 →
+        {mine ? `去收集其他 ${CATALOG.length - 1} 種 →` : `去收集這 ${CATALOG.length} 種 →`}
       </StoreLink>
     </section>
   );
